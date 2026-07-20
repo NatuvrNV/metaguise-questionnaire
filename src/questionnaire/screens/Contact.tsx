@@ -85,10 +85,13 @@ function PhoneWithCountry({
   const floated = focused || value.length > 0;
   const selected = COUNTRIES.find((c) => c.dial === dial) ?? COUNTRIES[0];
 
-  // Filter digits only for phone input
+  // Filter digits only and limit to 10 digits
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const digitsOnly = e.target.value.replace(/\D/g, "");
-    onChange(digitsOnly);
+    // Limit to exactly 10 digits
+    if (digitsOnly.length <= 10) {
+      onChange(digitsOnly);
+    }
   };
 
   const filtered = search.trim()
@@ -188,6 +191,7 @@ function PhoneWithCountry({
           autoComplete="tel"
           className="peer h-full flex-1 bg-transparent px-4 pt-4 pb-1 text-[14px] text-foreground outline-none"
           placeholder=" "
+          maxLength={10}
         />
         <label
           className={cn(

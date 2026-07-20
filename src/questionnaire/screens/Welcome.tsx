@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import hero from "@/assets/hero.jpg";
-import heroVideo from "@/assets/hero.mp4.json";
+import heroVideo from "@/assets/hero.mp4";
 import { GhostButton } from "../primitives";
 import { useQuestionnaire } from "../context";
 import logoFortis from "@/assets/logos/fortis.png";
@@ -109,7 +109,7 @@ export function Welcome() {
       <div className="relative order-first flex h-[36vh] items-stretch justify-center overflow-hidden border-b border-border lg:sticky lg:top-[66px] lg:order-none lg:h-[calc(100vh-66px)] lg:border-b-0 lg:border-l">
         <div className="relative h-full w-full overflow-hidden">
           <motion.video
-            src={heroVideo.url}
+            src={heroVideo}
             poster={hero}
             autoPlay
             muted
