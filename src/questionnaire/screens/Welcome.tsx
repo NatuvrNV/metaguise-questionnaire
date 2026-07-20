@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import hero from "@/assets/hero.jpg";
-import heroVideo from "@/assets/hero.mp4";
+import heroVideo from "@/assets/hero (1).mp4";
 import { GhostButton } from "../primitives";
 import { useQuestionnaire } from "../context";
 import logoFortis from "@/assets/logos/fortis.png";
