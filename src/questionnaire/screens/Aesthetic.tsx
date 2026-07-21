@@ -11,7 +11,7 @@ import artisticAsset from "@/assets/aesthetic/artistic.jpg";
 import contextualAsset from "@/assets/aesthetic/contextual.jpg";
 import fluidAsset from "@/assets/aesthetic/fluid.jpg";
 import monolithicAsset from "@/assets/aesthetic/monolithic.webp";
-import futuristicAsset from "@/assets/aesthetic/futuristic.jpg";
+import futuristicAsset from "@/assets/aesthetic/futuristic.jpeg";
 import refinedAsset from "@/assets/aesthetic/refined.jpg";
 import valueDrivenAsset from "@/assets/aesthetic/value-driven.jpg";
 import oneOfAKindAsset from "@/assets/aesthetic/one-of-a-kind.jpg";
