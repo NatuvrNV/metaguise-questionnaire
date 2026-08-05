@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SplitLayout } from "../SplitLayout";
 import { OptionRow, PrimaryButton, StepHeading, StickyFooter } from "../primitives";
 import { useQuestionnaire } from "../context";
@@ -24,14 +24,51 @@ const OPTIONS: { key: string; label: string; img: string; caption: string }[] = 
   { key: "other", label: "Other", img: imgOther, caption: "Tell us what you have in mind" },
 ];
 
+// Module-level flag so this only ever runs once per page session,
+// even if the component remounts (e.g. user navigates back to this step).
+let prefetched = false;
+
+function prefetchTypeImages() {
+  if (prefetched) return;
+  prefetched = true;
+
+  const urls = OPTIONS.map((o) => o.img);
+
+  urls.forEach((src) => {
+    const img = new Image();
+    img.src = src;
+  });
+}
+
 export function ProjectType() {
   const { answers, setAnswer, next } = useQuestionnaire();
   const [hover, setHover] = useState<string | null>(null);
+  const idleHandle = useRef<number | null>(null);
+
+  useEffect(() => {
+    // Defer prefetching until the browser is idle so it never competes
+    // with the current image's own load / first paint.
+    if ("requestIdleCallback" in window) {
+      idleHandle.current = window.requestIdleCallback(prefetchTypeImages, { timeout: 2000 });
+      return () => {
+        if (idleHandle.current !== null) window.cancelIdleCallback(idleHandle.current);
+      };
+    } else {
+      const t = window.setTimeout(prefetchTypeImages, 300);
+      return () => window.clearTimeout(t);
+    }
+  }, []);
+
   const active = hover ?? answers.projectType ?? "residence";
   const current = OPTIONS.find((o) => o.key === active) ?? OPTIONS[0];
 
   return (
-    <SplitLayout imageKey={current.key} imageSrc={current.img} caption={current.caption}>
+    <SplitLayout
+      imageKey={current.key}
+      imageSrc={current.img}
+      caption={current.caption}
+      imgProps={{ fetchPriority: "high", decoding: "async" }}
+    >
       <div className="space-y-6">
         <StepHeading
           kicker="Step 02: Project Classification"
