@@ -4,18 +4,18 @@ import { useQuestionnaire } from "../context";
 import { SplitLayout } from "../SplitLayout";
 
 import imgDefault from "@/assets/facade-default.jpg";
-import iconicAsset from "@/assets/aesthetic/iconic.jpg";
-import minimalAsset from "@/assets/aesthetic/minimal.jpg";
-import contemporaryAsset from "@/assets/aesthetic/contemporary.jpg";
-import artisticAsset from "@/assets/aesthetic/artistic.jpg";
-import contextualAsset from "@/assets/aesthetic/contextual.jpg";
-import fluidAsset from "@/assets/aesthetic/fluid.jpg";
+import iconicAsset from "@/assets/aesthetic/iconic.webp";
+import minimalAsset from "@/assets/aesthetic/minimal.webp";
+import contemporaryAsset from "@/assets/aesthetic/contemporary.webp";
+import artisticAsset from "@/assets/aesthetic/artistic.webp";
+import contextualAsset from "@/assets/aesthetic/contextual.webp";
+import fluidAsset from "@/assets/aesthetic/fluid.webp";
 import monolithicAsset from "@/assets/aesthetic/monolithic.webp";
-import futuristicAsset from "@/assets/aesthetic/futuristic.jpeg";
-import refinedAsset from "@/assets/aesthetic/refined.jpg";
-import valueDrivenAsset from "@/assets/aesthetic/value-driven.jpg";
-import oneOfAKindAsset from "@/assets/aesthetic/one-of-a-kind.jpg";
-import texturalAsset from "@/assets/aesthetic/textural.jpg";
+import futuristicAsset from "@/assets/aesthetic/futuristic.webp";
+import refinedAsset from "@/assets/aesthetic/refined.webp";
+import valueDrivenAsset from "@/assets/aesthetic/value-driven.webp";
+import oneOfAKindAsset from "@/assets/aesthetic/one-of-a-kind.webp";
+import texturalAsset from "@/assets/aesthetic/textural.webp";
 
 const STYLES: { key: string; label: string; img?: string }[] = [
   { key: "iconic", label: "Iconic", img: iconicAsset },

@@ -3,15 +3,15 @@ import { SplitLayout } from "../SplitLayout";
 import { OptionRow, PrimaryButton, StepHeading, StickyFooter } from "../primitives";
 import { useQuestionnaire } from "../context";
 
-import imgResidence from "@/assets/type-residence.jpg";
-import imgCorporate from "@/assets/type-corporate.jpg";
-import imgRetail from "@/assets/type-retail.jpg";
-import imgInstitutional from "@/assets/type-institutional.jpg";
-import imgHospitality from "@/assets/type-hospitality.jpg";
-import imgHealthcare from "@/assets/type-healthcare.jpg";
-import imgMixedAsset from "@/assets/type-mixed.jpg";
+import imgResidence from "@/assets/type-residence.webp";
+import imgCorporate from "@/assets/type-corporate.webp";
+import imgRetail from "@/assets/type-retail.webp";
+import imgInstitutional from "@/assets/type-institutional.webp";
+import imgHospitality from "@/assets/type-hospitality.webp";
+import imgHealthcare from "@/assets/type-healthcare.webp";
+import imgMixedAsset from "@/assets/type-mixed.webp";
 const imgMixed = imgMixedAsset;
-import imgOther from "@/assets/type-other.jpg";
+import imgOther from "@/assets/type-other.webp";
 
 const OPTIONS: { key: string; label: string; img: string; caption: string }[] = [
   { key: "residence", label: "Luxury Residence: Villa/Bungalow facade", img: imgResidence, caption: "Private luxury, crafted in metal" },

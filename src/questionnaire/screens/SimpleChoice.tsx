@@ -3,16 +3,16 @@ import { SplitLayout } from "../SplitLayout";
 import { OptionRow, PrimaryButton, StepHeading, StickyFooter } from "../primitives";
 import { useQuestionnaire } from "../context";
 
-import imgScaleAccentAsset from "@/assets/scale/accent.jpg";
-import imgScaleBoutiqueAsset from "@/assets/scale/scale-boutique.jpg";
-import imgScaleMidAsset from "@/assets/scale/scale-mid.jpg";
-import imgScaleLargeAsset from "@/assets/scale/scale-large.jpg";
-import imgScaleLandmarkAsset from "@/assets/scale/scale-landmark.jpg";
-import imgTimelineConceptAsset from "@/assets/timeline/timeline-concept.jpg";
-import imgTimelineVizAsset from "@/assets/timeline/timeline-viz.jpg";
-import imgTimelineTenderAsset from "@/assets/timeline/timeline-tender.jpg";
-import imgTimelineConstructionAsset from "@/assets/timeline/timeline-construction.jpg";
-import imgTimelineRenovationAsset from "@/assets/timeline/timeline-renovation.jpg";
+import imgScaleAccentAsset from "@/assets/scale/accent.webp";
+import imgScaleBoutiqueAsset from "@/assets/scale/scale-boutique.webp";
+import imgScaleMidAsset from "@/assets/scale/scale-mid.webp";
+import imgScaleLargeAsset from "@/assets/scale/scale-large.webp";
+import imgScaleLandmarkAsset from "@/assets/scale/scale-landmark.webp";
+import imgTimelineConceptAsset from "@/assets/timeline/timeline-concept.webp";
+import imgTimelineVizAsset from "@/assets/timeline/timeline-viz.webp";
+import imgTimelineTenderAsset from "@/assets/timeline/timeline-tender.webp";
+import imgTimelineConstructionAsset from "@/assets/timeline/timeline-construction.webp";
+import imgTimelineRenovationAsset from "@/assets/timeline/timeline-renovation.webp";
 import imgEngagement from "@/assets/engagement-scope.jpg";
 import engagementVideoAsset from "@/assets/step8.mp4";
 

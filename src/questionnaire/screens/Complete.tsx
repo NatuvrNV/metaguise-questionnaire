@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { MessageCircle, ArrowUpRight } from "lucide-react";
-import complete from "@/assets/step-complete.jpg";
+import complete from "@/assets/step-complete.webp";
 import { useQuestionnaire } from "../context";
 
 export function Complete() {

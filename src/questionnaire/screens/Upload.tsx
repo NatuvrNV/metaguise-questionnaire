@@ -4,7 +4,7 @@ import { SplitLayout } from "../SplitLayout";
 import { PrimaryButton, StepHeading, StickyFooter } from "../primitives";
 import { useQuestionnaire } from "../context";
 import { cn } from "@/lib/utils";
-import imgHero from "@/assets/step-assets.jpg";
+import imgHero from "@/assets/step-assets.webp";
 
 export function Upload() {
   const { answers, setAnswer, next } = useQuestionnaire();

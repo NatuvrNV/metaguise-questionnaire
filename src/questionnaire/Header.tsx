@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { TOTAL_STEPS, useQuestionnaire } from "./context";
-import logo from "@/assets/metaguise-logo.png";
+import logo from "@/assets/metaguise-logo.webp";
 
 export function Header() {
   const { step } = useQuestionnaire();

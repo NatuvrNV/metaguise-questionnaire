@@ -1,7 +1,7 @@
 import { SplitLayout } from "../SplitLayout";
 import { PrimaryButton, StepHeading, StickyFooter } from "../primitives";
 import { useQuestionnaire } from "../context";
-import imgHero from "@/assets/step-vision.jpg";
+import imgHero from "@/assets/step-vision.webp";
 
 export function Vision() {
   const { answers, setAnswer, next } = useQuestionnaire();

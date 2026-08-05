@@ -4,7 +4,7 @@ import { SplitLayout } from "../SplitLayout";
 import { FloatingInput, PrimaryButton, StepHeading, StickyFooter } from "../primitives";
 import { useQuestionnaire } from "../context";
 import { cn } from "@/lib/utils";
-import hero from "@/assets/contact-intro.jpg";
+import hero from "@/assets/contact-intro.webp";
 import { Search } from "lucide-react";
 
 function flagEmoji(code: string): string {

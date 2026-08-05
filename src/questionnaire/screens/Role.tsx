@@ -3,13 +3,13 @@ import { PrimaryButton, StepHeading, StickyFooter, OptionRow } from "../primitiv
 import { useQuestionnaire } from "../context";
 import { SplitLayout } from "../SplitLayout";
 
-import imgArchitectAsset from "@/assets/role-architect.jpg";
-import imgDeveloperAsset from "@/assets/role-developer.jpg";
-import imgOwnerAsset from "@/assets/role-owner.jpg";
-import imgContractorAsset from "@/assets/role-contractor.jpg";
-import imgConsultantAsset from "@/assets/role-consultant.jpg";
-import imgOtherAsset from "@/assets/role-other.jpg";
-import imgDefault from "@/assets/role-default.jpg";
+import imgArchitectAsset from "@/assets/role-architect.webp";
+import imgDeveloperAsset from "@/assets/role-developer.webp";
+import imgOwnerAsset from "@/assets/role-owner.webp";
+import imgContractorAsset from "@/assets/role-contractor.webp";
+import imgConsultantAsset from "@/assets/role-consultant.webp";
+import imgOtherAsset from "@/assets/role-other.webp";
+import imgDefault from "@/assets/role-default.webp";
 
 const imgArchitect = imgArchitectAsset;
 const imgDeveloper = imgDeveloperAsset;
