@@ -3,7 +3,7 @@ import { PrimaryButton, StepHeading, StickyFooter, OptionRow } from "../primitiv
 import { useQuestionnaire } from "../context";
 import { SplitLayout } from "../SplitLayout";
 
-import imgDefault from "@/assets/facade-default.jpg";
+import imgDefault from "@/assets/facade-default.webp";
 import iconicAsset from "@/assets/aesthetic/iconic.webp";
 import minimalAsset from "@/assets/aesthetic/minimal.webp";
 import contemporaryAsset from "@/assets/aesthetic/contemporary.webp";
