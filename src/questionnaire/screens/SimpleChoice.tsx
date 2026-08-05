@@ -13,7 +13,7 @@ import imgTimelineVizAsset from "@/assets/timeline/timeline-viz.webp";
 import imgTimelineTenderAsset from "@/assets/timeline/timeline-tender.webp";
 import imgTimelineConstructionAsset from "@/assets/timeline/timeline-construction.webp";
 import imgTimelineRenovationAsset from "@/assets/timeline/timeline-renovation.webp";
-import imgEngagement from "@/assets/engagement-scope.jpg";
+import imgEngagement from "@/assets/engagement-scope.webp";
 import engagementVideoAsset from "@/assets/step8.mp4";
 
 const imgTimelineConcept = imgTimelineConceptAsset;
