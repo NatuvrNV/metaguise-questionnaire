@@ -55,8 +55,8 @@ const LOGOS = [
 export function Welcome() {
   const { next } = useQuestionnaire();
   return (
-    <div className="grid grid-cols-1 lg:h-[calc(100vh-66px)] lg:min-h-0 lg:grid-cols-[2fr_1fr] lg:overflow-hidden">
-      <div className="flex items-center px-5 py-6 md:px-12 md:py-8 lg:pl-16 lg:pr-8">
+    <div className="flex h-[calc(100vh-66px)] flex-col overflow-hidden lg:grid lg:grid-cols-[2fr_1fr]">
+      <div className="order-2 flex min-h-0 flex-1 items-center overflow-y-auto px-5 py-6 md:px-12 md:py-8 lg:order-1 lg:flex-none lg:overflow-visible lg:pl-16 lg:pr-8">
 
         <div className="w-full max-w-4xl">
           <motion.div
@@ -107,7 +107,7 @@ export function Welcome() {
         </div>
       </div>
 
-      <div className="relative order-first flex h-[30vh] max-h-[260px] lg:max-h-none items-stretch justify-center overflow-hidden border-b border-border lg:sticky lg:top-[66px] lg:order-none lg:h-[calc(100vh-66px)] lg:border-b-0 lg:border-l">
+      <div className="relative order-1 flex h-[30vh] max-h-[260px] shrink-0 items-stretch justify-center overflow-hidden border-b border-border lg:sticky lg:top-[66px] lg:order-2 lg:h-[calc(100vh-66px)] lg:max-h-none lg:border-b-0 lg:border-l">
         <div className="relative h-full w-full overflow-hidden">
           <motion.video
             src={heroVideo}
