@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import hero from "@/assets/hero.webp";
-import heroVideo from "@/assets/hero (1).mp4";
+import heroVideo from "@/assets/hero.mp4";
 import { GhostButton } from "../primitives";
 import { useQuestionnaire } from "../context";
 import logoFortis from "@/assets/logos/fortis.webp";
@@ -54,48 +55,48 @@ const LOGOS = [
 export function Welcome() {
   const { next } = useQuestionnaire();
   return (
-    <div className="grid min-h-[calc(100vh-66px)] grid-cols-1 lg:h-[calc(100vh-66px)] lg:min-h-0 lg:grid-cols-[2fr_1fr] lg:overflow-hidden">
-      <div className="flex items-center px-6 py-10 md:px-12 lg:pl-16 lg:pr-8">
+    <div className="flex h-[calc(100vh-66px)] flex-col overflow-hidden lg:grid lg:grid-cols-[2fr_1fr]">
+      <div className="order-2 flex min-h-0 flex-1 items-center overflow-y-auto px-5 py-6 md:px-12 md:py-8 lg:order-1 lg:flex-none lg:overflow-visible lg:pl-16 lg:pr-8">
 
         <div className="w-full max-w-4xl">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="space-y-8"
+            className="space-y-6 md:space-y-8"
           >
-            <div className="text-[11px] uppercase tracking-[0.32em] text-foreground/70">
+            <div className="text-[10px] uppercase tracking-[0.32em] text-foreground/70 md:text-[11px]">
               India&apos;s original metal facade brand.
             </div>
-            <h1 className="text-3xl font-light leading-[1.1] tracking-tight text-foreground md:text-4xl lg:text-5xl">
+            <h1 className="text-[20px] font-light leading-[1.15] md:leading-[1.1] tracking-tight text-foreground md:text-4xl lg:text-5xl">
               A Metaguise facade isn&rsquo;t just{" "}
               <br className="hidden lg:inline" />
               measured in square feet, it&rsquo;s measured{" "}
               <br className="hidden lg:inline" />
               in recognition and prestige.
             </h1>
-            <p className="max-w-2xl text-base text-foreground/80 md:text-lg lg:whitespace-nowrap">
+            <p className="max-w-2xl text-sm text-foreground/80 md:text-lg lg:whitespace-nowrap">
               This is where you begin your journey of creating legacy through architecture.
             </p>
 
             <div className="pt-2">
-              <GhostButton onClick={next}>Start Your Journey</GhostButton>
+              <GhostButton onClick={next}>Start Your Journey <ArrowRight size={15} strokeWidth={1.5} className="transition-transform group-hover:translate-x-1" /></GhostButton>
             </div>
 
-            <div className="space-y-5 pt-10">
+            <div className="space-y-4 pt-3 md:space-y-5 md:pt-10">
               <div className="text-[10px] uppercase tracking-[0.3em] text-foreground/60">
                 1800+ Projects Delivered. Trusted choice of the greatest architectural minds of the world.
               </div>
               <div className="relative overflow-hidden">
                 <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-background to-transparent" />
                 <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-background to-transparent" />
-                <div className="flex w-max animate-marquee items-center gap-14">
+                <div className="flex w-max animate-marquee items-center gap-8 md:gap-14">
                   {[...LOGOS, ...LOGOS].map((l, i) => (
                     <img
                       key={i}
                       src={l.src}
                       alt={l.alt}
-                      className="h-[50px] w-auto max-w-[150px] object-contain opacity-90 transition hover:opacity-100"
+                      className="h-9 w-auto max-w-[110px] md:h-[50px] md:max-w-[150px] object-contain opacity-90 transition hover:opacity-100"
                       style={{ filter: "brightness(0) invert(1)" }}
                     />
                   ))}
@@ -106,7 +107,7 @@ export function Welcome() {
         </div>
       </div>
 
-      <div className="relative order-first flex h-[36vh] items-stretch justify-center overflow-hidden border-b border-border lg:sticky lg:top-[66px] lg:order-none lg:h-[calc(100vh-66px)] lg:border-b-0 lg:border-l">
+      <div className="relative order-1 flex h-[30vh] max-h-[260px] shrink-0 items-stretch justify-center overflow-hidden border-b border-border lg:sticky lg:top-[66px] lg:order-2 lg:h-[calc(100vh-66px)] lg:max-h-none lg:border-b-0 lg:border-l">
         <div className="relative h-full w-full overflow-hidden">
           <motion.video
             src={heroVideo}
@@ -126,3 +127,4 @@ export function Welcome() {
     </div>
   );
 }
+

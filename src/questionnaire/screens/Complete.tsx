@@ -20,7 +20,7 @@ export function Complete() {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className="relative z-10 mx-auto min-h-[calc(100vh-58px)] max-w-3xl px-0 py-0 text-center my-0 flex-col flex items-center justify-center gap-0"
+        className="relative z-10 mx-auto my-0 flex min-h-[calc(100vh-58px)] max-w-3xl flex-col items-center justify-center gap-0 px-5 py-0 text-center md:px-0"
       >
         <div className="text-[11px] uppercase tracking-[0.32em] text-[color:var(--gold)]">Brief received</div>
         <h1 className="mt-6 font-serif text-4xl font-light leading-[1.1] tracking-tight md:text-5xl lg:text-6xl">

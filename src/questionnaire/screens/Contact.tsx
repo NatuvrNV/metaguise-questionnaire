@@ -18,7 +18,7 @@ function flagEmoji(code: string): string {
 
 const schema = z.object({
   fullName: z.string().trim().min(2, "Please enter your full name").max(80),
-  phone: z.string().trim().regex(/^\d{10}$/, "Enter a valid 10-digit phone number"),
+  phone: z.string().trim().min(7, "Enter a valid phone number").max(20),
   email: z.string().trim().email("Enter a valid email").max(120),
 });
 
@@ -84,15 +84,6 @@ function PhoneWithCountry({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const floated = focused || value.length > 0;
   const selected = COUNTRIES.find((c) => c.dial === dial) ?? COUNTRIES[0];
-
-  // Filter digits only and limit to 10 digits
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const digitsOnly = e.target.value.replace(/\D/g, "");
-    // Limit to exactly 10 digits
-    if (digitsOnly.length <= 10) {
-      onChange(digitsOnly);
-    }
-  };
 
   const filtered = search.trim()
     ? COUNTRIES.filter(
@@ -185,13 +176,12 @@ function PhoneWithCountry({
         <input
           type="tel"
           value={value}
-          onChange={handlePhoneChange}
+          onChange={(e) => onChange(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           autoComplete="tel"
           className="peer h-full flex-1 bg-transparent px-4 pt-4 pb-1 text-[14px] text-foreground outline-none"
           placeholder=" "
-          maxLength={10}
         />
         <label
           className={cn(

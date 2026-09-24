@@ -55,6 +55,7 @@ export function Role() {
               label={r.label}
               thumb={r.img}
               thumbClassName="hidden md:block"
+              cardImg={r.img}
               selected={answers.role === r.key}
               onClick={() => setAnswer("role", r.key)}
             />

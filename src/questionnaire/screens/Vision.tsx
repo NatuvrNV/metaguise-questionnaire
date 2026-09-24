@@ -1,15 +1,62 @@
+import { useState } from "react";
 import { SplitLayout } from "../SplitLayout";
 import { PrimaryButton, StepHeading, StickyFooter } from "../primitives";
 import { useQuestionnaire } from "../context";
 import imgHero from "@/assets/step-vision.webp";
 
+// Zapier "Catch Hook" webhook URL — sends the full brief to Zapier on submit.
+const ZAPIER_WEBHOOK_URL = "https://hooks.zapier.com/hooks/catch/22435559/4dv0kb7/";
+
 export function Vision() {
   const { answers, setAnswer, next } = useQuestionnaire();
   const vision = answers.vision ?? "";
+  const [submitting, setSubmitting] = useState(false);
 
-  const submit = () => {
-    // Log full project brief : backend wiring can be added later
-    console.info("[Metaguise] Project brief submitted", answers);
+  const submit = async () => {
+    if (submitting) return;
+    setSubmitting(true);
+
+    // Flatten the answers into a spreadsheet-friendly shape.
+    const payload = {
+      submittedAt: new Date().toISOString(),
+      fullName: answers.fullName ?? "",
+      email: answers.email ?? "",
+      phone: `${answers.phoneCountry ?? ""} ${answers.phone ?? ""}`.trim(),
+      role: answers.role === "Other" ? answers.roleOther : answers.role ?? "",
+      projectType: answers.projectType === "other" ? answers.projectTypeOther : answers.projectType ?? "",
+      scale: answers.scale ?? "",
+      facadeStyle: answers.facadeStyle ?? "",
+      timeline: answers.timeline ?? "",
+      hasAssets: answers.hasAssets ?? "",
+      engagement: answers.engagement === "other" ? answers.engagementOther : answers.engagement ?? "",
+      vision,
+      fileNames: (answers.files ?? []).map((f) => f.name).join(", "),
+      fileCount: (answers.files ?? []).length,
+    };
+
+    console.info("[Metaguise] Project brief submitted", payload);
+
+    if (ZAPIER_WEBHOOK_URL) {
+      try {
+        // NOTE: Content-Type is "text/plain" on purpose, not "application/json".
+        // "application/json" is not a CORS-safelisted header value, so the browser
+        // sends a preflight OPTIONS request first — and Zapier's Catch Hook doesn't
+        // answer that preflight the way browsers expect, so the real POST either
+        // gets blocked or only the empty preflight gets logged. "text/plain" is
+        // safelisted, so no preflight happens, and Zapier still parses the body as
+        // JSON since the content itself is valid JSON.
+        await fetch(ZAPIER_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify(payload),
+        });
+      } catch (err) {
+        // Don't block the user's flow on a network error — just log it.
+        console.error("[Metaguise] Failed to send brief to Zapier", err);
+      }
+    }
+
+    setSubmitting(false);
     next();
   };
 
@@ -31,7 +78,9 @@ export function Vision() {
         </div>
       </div>
       <StickyFooter>
-        <PrimaryButton onClick={submit}>Submit Project Brief</PrimaryButton>
+        <PrimaryButton onClick={submit} disabled={submitting}>
+          {submitting ? "Submitting..." : "Submit Project Brief"}
+        </PrimaryButton>
       </StickyFooter>
     </SplitLayout>
   );

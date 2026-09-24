@@ -1,6 +1,7 @@
 import { ArrowRight, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, type InputHTMLAttributes, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
 
 export function StepHeading({ kicker, title, sub }: { kicker?: string; title: ReactNode; sub?: ReactNode }) {
@@ -9,7 +10,7 @@ export function StepHeading({ kicker, title, sub }: { kicker?: string; title: Re
       {kicker && (
         <div className="text-[10px] uppercase tracking-[0.3em] text-foreground/70">{kicker}</div>
       )}
-      <h1 className="text-2xl font-light leading-[1.15] tracking-tight text-foreground md:text-3xl lg:whitespace-nowrap">
+      <h1 className="text-xl font-light leading-[1.2] tracking-tight text-foreground sm:text-2xl md:text-3xl lg:whitespace-nowrap">
         {title}
       </h1>
       {sub && <p className="max-w-xl text-sm text-foreground/70 md:text-base">{sub}</p>}
@@ -57,12 +58,16 @@ export function GhostButton({ children, onClick }: { children: ReactNode; onClic
 }
 
 export function StickyFooter({ children }: { children: ReactNode }) {
-  return (
+  // Render via portal to document.body so position:fixed is relative to the
+  // viewport, not a transformed ancestor (e.g. framer-motion step wrapper).
+  if (typeof document === "undefined") return null;
+  return createPortal(
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/85 backdrop-blur-xl">
-      <div className="flex flex-wrap items-center gap-4 px-6 py-3 md:px-10">
+      <div className="flex flex-wrap items-center gap-4 px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:px-10 [&>button]:w-full [&>button]:justify-center md:[&>button]:w-auto">
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -74,6 +79,7 @@ export function OptionRow({
   index,
   thumb,
   thumbClassName,
+  cardImg,
 }: {
   label: string;
   selected: boolean;
@@ -82,6 +88,7 @@ export function OptionRow({
   index: number;
   thumb?: string;
   thumbClassName?: string;
+  cardImg?: string;
 }) {
   return (
     <motion.button
@@ -92,26 +99,35 @@ export function OptionRow({
       onFocus={onHover}
       onClick={onClick}
       className={cn(
-        "group relative flex w-full items-center gap-4 rounded-md border px-3 py-2.5 text-left transition-all duration-300",
+        "group relative flex w-full flex-col overflow-hidden rounded-md border text-left transition-all duration-300 md:flex-row md:items-center md:gap-4 md:px-3 md:py-2.5",
         selected
           ? "border-[color:var(--accent)] bg-[color:color-mix(in_oklab,var(--accent)_8%,transparent)]"
           : "border-border bg-card/40 hover:border-foreground/30 hover:bg-card"
       )}
     >
+      {cardImg && (
+        <div className="md:hidden">
+          <div className="relative aspect-[4/3] w-full overflow-hidden">
+            <img src={cardImg} alt="" className="h-full w-full object-cover" />
+          </div>
+        </div>
+      )}
       {thumb && (
-        <span className={cn("relative h-10 w-14 shrink-0 overflow-hidden rounded-sm border border-border/60", thumbClassName)}>
+        <span className={cn("relative hidden h-10 w-14 shrink-0 overflow-hidden rounded-sm border border-border/60 md:block", thumbClassName)}>
           <img src={thumb} alt="" className="h-full w-full object-cover" />
         </span>
       )}
-      <span className="flex-1 text-[14px] font-light text-foreground">{label}</span>
-      <span
-        className={cn(
-          "grid h-5 w-5 place-items-center rounded-full border transition",
-          selected ? "border-[color:var(--accent)] bg-[color:var(--accent)]" : "border-border group-hover:border-foreground/40"
-        )}
-      >
-        {selected && <Check size={12} className="text-[color:var(--accent-foreground)]" strokeWidth={3} />}
-      </span>
+      <div className="flex w-full items-center gap-3 px-3 py-3 md:gap-3">
+        <span className="flex-1 text-[13px] font-light leading-snug text-foreground md:text-[14px]">{label}</span>
+        <span
+          className={cn(
+            "grid h-5 w-5 shrink-0 place-items-center rounded-full border transition",
+            selected ? "border-[color:var(--accent)] bg-[color:var(--accent)]" : "border-border group-hover:border-foreground/40"
+          )}
+        >
+          {selected && <Check size={12} className="text-[color:var(--accent-foreground)]" strokeWidth={3} />}
+        </span>
+      </div>
     </motion.button>
   );
 }

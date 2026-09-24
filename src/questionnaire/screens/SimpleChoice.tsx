@@ -2,7 +2,6 @@ import { useState } from "react";
 import { SplitLayout } from "../SplitLayout";
 import { OptionRow, PrimaryButton, StepHeading, StickyFooter } from "../primitives";
 import { useQuestionnaire } from "../context";
-import { usePrefetchImages } from "../../hooks/usePrefetchImages";
 
 import imgScaleAccentAsset from "@/assets/scale/accent.webp";
 import imgScaleBoutiqueAsset from "@/assets/scale/scale-boutique.webp";
@@ -15,7 +14,7 @@ import imgTimelineTenderAsset from "@/assets/timeline/timeline-tender.webp";
 import imgTimelineConstructionAsset from "@/assets/timeline/timeline-construction.webp";
 import imgTimelineRenovationAsset from "@/assets/timeline/timeline-renovation.webp";
 import imgEngagement from "@/assets/engagement-scope.webp";
-import engagementVideoAsset from "@/assets/step8.mp4";
+import engagementVideo from "@/assets/step8.mp4";
 
 const imgTimelineConcept = imgTimelineConceptAsset;
 const imgTimelineViz = imgTimelineVizAsset;
@@ -39,18 +38,10 @@ export function Scale() {
     { key: "large", label: "Large Scale: 10,000 to 30,000 sqft", img: imgScaleLandmark },
     { key: "landmark", label: "Landmark/Mega Project: 30,000 sqft and above", img: imgScaleLarge },
   ];
-
-  usePrefetchImages(options.map((o) => o.img), "scale");
-
   const activeKey = hover ?? answers.scale;
   const activeImg = options.find((o) => o.key === activeKey)?.img ?? imgScaleAccent;
   return (
-    <SplitLayout
-      imageKey={activeKey ?? "scale"}
-      imageSrc={activeImg}
-      caption="From boutique to landmark"
-      imgProps={{ fetchPriority: "high", decoding: "async" }}
-    >
+    <SplitLayout imageKey={activeKey ?? "scale"} imageSrc={activeImg} caption="From boutique to landmark">
       <div className="space-y-6">
         <StepHeading
           kicker="Step 05: Project Scale"
@@ -62,6 +53,7 @@ export function Scale() {
               key={o.key}
               index={i}
               label={o.label}
+              cardImg={o.img}
               selected={answers.scale === o.key}
               onHover={() => setHover(o.key)}
               onClick={() => setAnswer("scale", o.key)}
@@ -86,9 +78,6 @@ export function Timeline() {
     { key: "construction", label: "Under Construction", img: imgTimelineConstruction },
     { key: "renovation", label: "Renovation/Facade Upgrade", img: imgTimelineRenovation },
   ];
-
-  usePrefetchImages(options.map((o) => o.img), "timeline");
-
   const activeKey = hover ?? answers.timeline;
   const activeImg = options.find((o) => o.key === activeKey)?.img ?? imgTimelineConcept;
   const assetOptions: { key: "yes" | "no"; label: string }[] = [
@@ -96,12 +85,7 @@ export function Timeline() {
     { key: "no", label: "No" },
   ];
   return (
-    <SplitLayout
-      imageKey={activeKey ?? "timeline"}
-      imageSrc={activeImg}
-      caption="The right moment to engage"
-      imgProps={{ fetchPriority: "high", decoding: "async" }}
-    >
+    <SplitLayout imageKey={activeKey ?? "timeline"} imageSrc={activeImg} caption="The right moment to engage">
       <div className="space-y-6">
         <StepHeading
           kicker="Step 07: Project Lifecycle"
@@ -113,6 +97,7 @@ export function Timeline() {
               key={o.key}
               index={i}
               label={o.label}
+              cardImg={o.img}
               selected={answers.timeline === o.key}
               onHover={() => setHover(o.key)}
               onClick={() => setAnswer("timeline", o.key)}
@@ -154,13 +139,7 @@ export function Engagement() {
   const isOther = answers.engagement === "other";
   const canContinue = !!answers.engagement && (!isOther || (answers.engagementOther ?? "").trim().length > 0);
   return (
-    <SplitLayout
-      imageKey="engagement"
-      imageSrc={imgEngagement}
-      videoSrc={engagementVideoAsset}
-      caption="From concept to skyline"
-      imgProps={{ fetchPriority: "high", decoding: "async" }}
-    >
+    <SplitLayout imageKey="engagement" imageSrc={imgEngagement} videoSrc={engagementVideo} caption="From concept to skyline">
       <div className="space-y-6">
         <StepHeading
           kicker="Step 08: Engagement Timing"

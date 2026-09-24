@@ -8,8 +8,8 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
-      <div className="relative flex h-24 items-center justify-center px-6 md:px-10">
-        <img src={logo} alt="Metaguise" className="h-16 w-auto object-contain" />
+      <div className="relative flex h-12 items-center justify-center px-5 md:h-24 md:px-10">
+        <img src={logo} alt="Metaguise" className="h-9 w-auto object-contain md:h-16" />
       </div>
       <div className="relative h-[2px] w-full bg-border/40">
         <motion.div

@@ -16,35 +16,41 @@ export function SplitLayout({
   videoSrc?: string;
 }) {
   const { step, prev, next } = useQuestionnaire();
+
+  const nav = (
+    <div className="flex items-center gap-3 text-xs tabular-nums text-foreground">
+      <button
+        onClick={prev}
+        disabled={step === 1}
+        aria-label="Previous question"
+        className="grid h-9 w-9 place-items-center rounded-full border border-foreground/40 text-foreground transition hover:border-foreground hover:bg-foreground hover:text-background disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-foreground md:h-7 md:w-7"
+      >
+        <ChevronLeft size={14} strokeWidth={1.5} />
+      </button>
+      <span>
+        <span>{String(step).padStart(2, "0")}</span>
+        <span className="mx-1 text-foreground/40">/</span>
+        <span className="text-foreground/60">{String(TOTAL_STEPS).padStart(2, "0")}</span>
+      </span>
+      <button
+        onClick={next}
+        disabled={step === TOTAL_STEPS}
+        aria-label="Next question"
+        className="grid h-9 w-9 place-items-center rounded-full border border-foreground/40 text-foreground transition hover:border-foreground hover:bg-foreground hover:text-background disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-foreground md:h-7 md:w-7"
+      >
+        <ChevronRight size={14} strokeWidth={1.5} />
+      </button>
+    </div>
+  );
+
   return (
-    <div className="grid min-h-[calc(100vh-98px)] grid-cols-1 pb-20 lg:grid-cols-[3fr_2fr]">
-      <div className="relative flex items-center px-6 pt-16 pb-8 md:px-10 md:py-8 lg:px-14">
-        <div className="absolute right-6 top-4 flex items-center gap-3 text-xs tabular-nums text-foreground md:right-10">
-          <button
-            onClick={prev}
-            disabled={step === 1}
-            aria-label="Previous question"
-            className="grid h-7 w-7 place-items-center rounded-full border border-foreground/40 text-foreground transition hover:border-foreground hover:bg-foreground hover:text-background disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-foreground"
-          >
-            <ChevronLeft size={14} strokeWidth={1.5} />
-          </button>
-          <span>
-            <span>{String(step).padStart(2, "0")}</span>
-            <span className="mx-1 text-foreground/40">/</span>
-            <span className="text-foreground/60">{String(TOTAL_STEPS).padStart(2, "0")}</span>
-          </span>
-          <button
-            onClick={next}
-            disabled={step === TOTAL_STEPS}
-            aria-label="Next question"
-            className="grid h-7 w-7 place-items-center rounded-full border border-foreground/40 text-foreground transition hover:border-foreground hover:bg-foreground hover:text-background disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-foreground"
-          >
-            <ChevronRight size={14} strokeWidth={1.5} />
-          </button>
-        </div>
+    <div className="grid grid-cols-1 pb-24 lg:min-h-[calc(100vh-98px)] lg:grid-cols-[3fr_2fr] lg:pb-20">
+      <div className="relative flex items-center px-5 pb-6 pt-16 md:px-10 md:py-8 md:pt-16 lg:px-14">
+        <div className="absolute right-6 top-4 hidden md:flex md:right-10">{nav}</div>
+        <div className="absolute right-5 top-4 flex md:hidden">{nav}</div>
         <div className="w-full max-w-2xl">{children}</div>
       </div>
-      <div className="relative order-first h-[34vh] overflow-hidden border-b border-border lg:order-none lg:h-auto lg:border-b-0 lg:border-l">
+      <div className="relative order-first hidden overflow-hidden border-b border-border lg:order-none lg:block lg:h-auto lg:border-b-0 lg:border-l">
         {videoSrc ? (
           <video
             key={videoSrc}

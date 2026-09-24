@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { PrimaryButton, StepHeading, StickyFooter, OptionRow } from "../primitives";
 import { useQuestionnaire } from "../context";
 import { SplitLayout } from "../SplitLayout";
@@ -32,40 +32,9 @@ const STYLES: { key: string; label: string; img?: string }[] = [
   { key: "textural", label: "Maximalist", img: texturalAsset },
 ];
 
-// Module-level flag so this only ever runs once per page session,
-// even if the component remounts (e.g. user navigates back to this step).
-let prefetched = false;
-
-function prefetchStyleImages() {
-  if (prefetched) return;
-  prefetched = true;
-
-  const urls = [imgDefault, ...STYLES.map((s) => s.img).filter(Boolean)] as string[];
-
-  urls.forEach((src) => {
-    const img = new Image();
-    img.src = src;
-  });
-}
-
 export function Aesthetic() {
   const { answers, setAnswer, next } = useQuestionnaire();
   const [hover, setHover] = useState<string | null>(null);
-  const idleHandle = useRef<number | null>(null);
-
-  useEffect(() => {
-    // Defer prefetching until the browser is idle so it never competes
-    // with the current image's own load / first paint.
-    if ("requestIdleCallback" in window) {
-      idleHandle.current = window.requestIdleCallback(prefetchStyleImages, { timeout: 2000 });
-      return () => {
-        if (idleHandle.current !== null) window.cancelIdleCallback(idleHandle.current);
-      };
-    } else {
-      const t = window.setTimeout(prefetchStyleImages, 300);
-      return () => window.clearTimeout(t);
-    }
-  }, []);
 
   const activeKey = hover ?? answers.facadeStyle ?? null;
   const active = STYLES.find((s) => s.key === activeKey);
@@ -73,11 +42,7 @@ export function Aesthetic() {
   const imageKey = active?.img ? active.key : "aesthetic-default";
 
   return (
-    <SplitLayout
-      imageKey={imageKey}
-      imageSrc={imageSrc}
-      imgProps={{ fetchPriority: "high", decoding: "async" }}
-    >
+    <SplitLayout imageKey={imageKey} imageSrc={imageSrc}>
       <div className="space-y-6">
         <StepHeading
           kicker="Step 06: Aesthetic Resonance"
@@ -89,6 +54,7 @@ export function Aesthetic() {
               key={s.key}
               index={i}
               label={s.label}
+              cardImg={s.img}
               selected={answers.facadeStyle === s.key}
               onHover={() => setHover(s.key)}
               onClick={() => setAnswer("facadeStyle", s.key)}
