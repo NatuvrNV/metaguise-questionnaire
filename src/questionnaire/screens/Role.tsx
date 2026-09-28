@@ -36,9 +36,10 @@ export function Role() {
     }
   }, []);
 
-  const active = ROLES.find((r) => r.key === answers.role);
-  const imgSrc = active?.img ?? imgDefault;
-  const imgKey = active?.key ?? "default";
+const currentRole = answers.role ?? ROLES[0].key;
+const active = ROLES.find((r) => r.key === currentRole);
+const imgSrc = active?.img ?? imgDefault;
+const imgKey = active?.key ?? "default";
   return (
     <SplitLayout imageKey={imgKey} imageSrc={imgSrc} caption={active?.caption}>
       <div className="space-y-6">

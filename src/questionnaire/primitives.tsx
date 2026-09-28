@@ -1,5 +1,4 @@
 import { ArrowRight, Check } from "lucide-react";
-import { motion } from "framer-motion";
 import { useState, type InputHTMLAttributes, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
@@ -59,7 +58,7 @@ export function GhostButton({ children, onClick }: { children: ReactNode; onClic
 
 export function StickyFooter({ children }: { children: ReactNode }) {
   // Render via portal to document.body so position:fixed is relative to the
-  // viewport, not a transformed ancestor (e.g. framer-motion step wrapper).
+  // viewport, not a transformed ancestor.
   if (typeof document === "undefined") return null;
   return createPortal(
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/85 backdrop-blur-xl">
@@ -76,7 +75,9 @@ export function OptionRow({
   selected,
   onHover,
   onClick,
-  index,
+  // `index` is kept in the props so existing callers don't break,
+  // but the staggered entrance animation was removed.
+  index: _index,
   thumb,
   thumbClassName,
   cardImg,
@@ -91,10 +92,10 @@ export function OptionRow({
   cardImg?: string;
 }) {
   return (
-    <motion.button
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.03, duration: 0.35 }}
+    // Plain <button> (was motion.button with a fade/slide-in), so options
+    // appear instantly with the screen.
+    <button
+      type="button"
       onMouseEnter={onHover}
       onFocus={onHover}
       onClick={onClick}
@@ -108,13 +109,13 @@ export function OptionRow({
       {cardImg && (
         <div className="md:hidden">
           <div className="relative aspect-[4/3] w-full overflow-hidden">
-            <img src={cardImg} alt="" className="h-full w-full object-cover" />
+            <img src={cardImg} alt="" loading="eager" decoding="async" className="h-full w-full object-cover" />
           </div>
         </div>
       )}
       {thumb && (
         <span className={cn("relative hidden h-10 w-14 shrink-0 overflow-hidden rounded-sm border border-border/60 md:block", thumbClassName)}>
-          <img src={thumb} alt="" className="h-full w-full object-cover" />
+          <img src={thumb} alt="" loading="eager" decoding="async" className="h-full w-full object-cover" />
         </span>
       )}
       <div className="flex w-full items-center gap-3 px-3 py-3 md:gap-3">
@@ -128,7 +129,7 @@ export function OptionRow({
           {selected && <Check size={12} className="text-[color:var(--accent-foreground)]" strokeWidth={3} />}
         </span>
       </div>
-    </motion.button>
+    </button>
   );
 }
 
@@ -139,6 +140,7 @@ export function FloatingInput({ label, error, value, onChange, ...rest }: Floati
   const floated = focused || hasValue;
   return (
     <div className="relative">
+      {/* text-[16px] on mobile: iOS Safari auto-zooms into any input below 16px */}
       <input
         {...rest}
         value={value}
@@ -146,7 +148,7 @@ export function FloatingInput({ label, error, value, onChange, ...rest }: Floati
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         className={cn(
-          "peer h-12 w-full rounded-md border bg-card/40 px-4 pt-4 pb-1 text-[14px] text-foreground outline-none transition",
+          "peer h-12 w-full rounded-md border bg-card/40 px-4 pt-4 pb-1 text-[16px] text-foreground outline-none transition md:text-[14px]",
           "focus:border-[color:var(--accent)] focus:bg-card focus:shadow-[0_0_0_3px_color-mix(in_oklab,var(--accent)_18%,transparent)]",
           error ? "border-destructive" : "border-border"
         )}

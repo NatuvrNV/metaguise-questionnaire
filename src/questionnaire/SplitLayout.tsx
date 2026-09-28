@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { TOTAL_STEPS, useQuestionnaire } from "./context";
+import { AutoPlayVideo } from "./AutoplayVideo";
 
 export function SplitLayout({
   children,
@@ -43,6 +44,15 @@ export function SplitLayout({
     </div>
   );
 
+  // The media panel is hidden below `lg` for image-only steps. When a video is
+  // present it must stay visible on mobile, because browsers do not play
+  // videos inside a `display: none` element.
+  const mediaPanelClass = [
+    "relative order-first overflow-hidden border-b border-border",
+    "lg:order-none lg:h-auto lg:border-b-0 lg:border-l lg:block",
+    videoSrc ? "block h-56 sm:h-72" : "hidden",
+  ].join(" ");
+
   return (
     <div className="grid grid-cols-1 pb-24 lg:min-h-[calc(100vh-98px)] lg:grid-cols-[3fr_2fr] lg:pb-20">
       <div className="relative flex items-center px-5 pb-6 pt-16 md:px-10 md:py-8 md:pt-16 lg:px-14">
@@ -50,27 +60,24 @@ export function SplitLayout({
         <div className="absolute right-5 top-4 flex md:hidden">{nav}</div>
         <div className="w-full max-w-2xl">{children}</div>
       </div>
-      <div className="relative order-first hidden overflow-hidden border-b border-border lg:order-none lg:block lg:h-auto lg:border-b-0 lg:border-l">
+      <div className={mediaPanelClass}>
         {videoSrc ? (
-          <video
+          <AutoPlayVideo
             key={videoSrc}
             src={videoSrc}
-            autoPlay
-            loop
-            muted
-            playsInline
+            poster={imageSrc}
             className="absolute inset-0 h-full w-full object-cover"
           />
         ) : (
-          <AnimatePresence mode="sync">
+          <AnimatePresence mode="sync" initial={false}>
             <motion.img
               key={imageKey}
               src={imageSrc}
               alt=""
-              initial={{ opacity: 0, scale: 1.06 }}
+              initial={{ opacity: 0, scale: 1.03 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               className="absolute inset-0 h-full w-full object-cover"
             />
           </AnimatePresence>

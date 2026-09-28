@@ -98,6 +98,11 @@
 @layer base {
   * { border-color: var(--color-border); }
   html, body, #root { height: 100%; }
+  html {
+    /* Stops iOS from resizing text on orientation change */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
@@ -119,4 +124,35 @@
 /* Subtle metallic hairline */
 .metal-hairline {
   background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--gold) 60%, transparent), transparent);
+}
+
+/* ------------------------------------------------------------------
+   iOS fixes
+   ------------------------------------------------------------------ */
+
+/* iOS Safari auto-zooms into any focused field under 16px.
+   Unlayered + !important so it always beats Tailwind's text-[14px] utilities. */
+@supports (-webkit-touch-callout: none) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Same rule for small screens on any browser */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Hide the native iOS play button on the autoplay videos */
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+}
+video::-webkit-media-controls {
+  display: none !important;
 }

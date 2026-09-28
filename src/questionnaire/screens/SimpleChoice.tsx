@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
+import { z } from "zod";
 import { SplitLayout } from "../SplitLayout";
 import { OptionRow, PrimaryButton, StepHeading, StickyFooter } from "../primitives";
 import { useQuestionnaire } from "../context";
@@ -8,18 +9,16 @@ import imgScaleBoutiqueAsset from "@/assets/scale/scale-boutique.webp";
 import imgScaleMidAsset from "@/assets/scale/scale-mid.webp";
 import imgScaleLargeAsset from "@/assets/scale/scale-large.webp";
 import imgScaleLandmarkAsset from "@/assets/scale/scale-landmark.webp";
-import imgTimelineConceptAsset from "@/assets/timeline/timeline-concept.webp";
 import imgTimelineVizAsset from "@/assets/timeline/timeline-viz.webp";
-import imgTimelineTenderAsset from "@/assets/timeline/timeline-tender.webp";
 import imgTimelineConstructionAsset from "@/assets/timeline/timeline-construction.webp";
+import imgTimelineCivilAsset from "@/assets/timeline/timeline-concept.webp";
 import imgTimelineRenovationAsset from "@/assets/timeline/timeline-renovation.webp";
 import imgEngagement from "@/assets/engagement-scope.webp";
 import engagementVideo from "@/assets/step8.mp4";
 
-const imgTimelineConcept = imgTimelineConceptAsset;
 const imgTimelineViz = imgTimelineVizAsset;
-const imgTimelineTender = imgTimelineTenderAsset;
 const imgTimelineConstruction = imgTimelineConstructionAsset;
+const imgTimelineCivil = imgTimelineCivilAsset;
 const imgTimelineRenovation = imgTimelineRenovationAsset;
 
 const imgScaleAccent = imgScaleAccentAsset;
@@ -41,7 +40,11 @@ export function Scale() {
   const activeKey = hover ?? answers.scale;
   const activeImg = options.find((o) => o.key === activeKey)?.img ?? imgScaleAccent;
   return (
-    <SplitLayout imageKey={activeKey ?? "scale"} imageSrc={activeImg} caption="From boutique to landmark">
+    <SplitLayout
+      imageKey={activeKey ?? "scale"}
+      imageSrc={activeImg}
+      caption="From boutique to landmark"
+    >
       <div className="space-y-6">
         <StepHeading
           kicker="Step 05: Project Scale"
@@ -62,7 +65,9 @@ export function Scale() {
         </div>
       </div>
       <StickyFooter>
-        <PrimaryButton disabled={!answers.scale} onClick={next}>Continue</PrimaryButton>
+        <PrimaryButton disabled={!answers.scale} onClick={next}>
+          Continue
+        </PrimaryButton>
       </StickyFooter>
     </SplitLayout>
   );
@@ -71,21 +76,43 @@ export function Scale() {
 export function Timeline() {
   const { answers, setAnswer, next } = useQuestionnaire();
   const [hover, setHover] = useState<string | null>(null);
+  const timelineDaysSchema = z.coerce.number().int().min(1).max(3650);
   const options = [
-    { key: "concept", label: "Concept Design", img: imgTimelineConcept },
-    { key: "viz", label: "3D Visualization Ready", img: imgTimelineViz },
-    { key: "tender", label: "Tendering Stage", img: imgTimelineTender },
-    { key: "construction", label: "Under Construction", img: imgTimelineConstruction },
-    { key: "renovation", label: "Renovation/Facade Upgrade", img: imgTimelineRenovation },
+    { key: "design", label: "Design Stage", img: imgTimelineViz },
+    {
+      key: "construction",
+      label: "Under Construction, Civil work completing in _ days",
+      img: imgTimelineConstruction,
+    },
+    {
+      key: "civil-complete",
+      label: "Civil work completed, ready for facade work",
+      img: imgTimelineCivil,
+    },
+    { key: "renovation", label: "Renovation/Facade upgrade", img: imgTimelineRenovation },
   ];
+  const isConstruction = answers.timeline === "construction";
+  const hasValidDays = timelineDaysSchema.safeParse(answers.timelineDays).success;
+  const canContinue = !!answers.timeline && (!isConstruction || hasValidDays);
   const activeKey = hover ?? answers.timeline;
-  const activeImg = options.find((o) => o.key === activeKey)?.img ?? imgTimelineConcept;
-  const assetOptions: { key: "yes" | "no"; label: string }[] = [
-    { key: "yes", label: "Yes" },
-    { key: "no", label: "No" },
-  ];
+  const activeImg = options.find((o) => o.key === activeKey)?.img ?? imgTimelineViz;
+
+  const selectTimeline = (key: string) => {
+    setAnswer("timeline", key);
+    if (key !== "construction") setAnswer("timelineDays", undefined);
+  };
+
+  const updateTimelineDays = (value: string) => {
+    const digitsOnly = value.replace(/\D/g, "").slice(0, 4);
+    setAnswer("timelineDays", digitsOnly);
+  };
+
   return (
-    <SplitLayout imageKey={activeKey ?? "timeline"} imageSrc={activeImg} caption="The right moment to engage">
+    <SplitLayout
+      imageKey={activeKey ?? "timeline"}
+      imageSrc={activeImg}
+      caption="The right moment to engage"
+    >
       <div className="space-y-6">
         <StepHeading
           kicker="Step 07: Project Lifecycle"
@@ -93,36 +120,49 @@ export function Timeline() {
         />
         <div className="grid grid-cols-2 gap-2">
           {options.map((o, i) => (
-            <OptionRow
-              key={o.key}
-              index={i}
-              label={o.label}
-              cardImg={o.img}
-              selected={answers.timeline === o.key}
-              onHover={() => setHover(o.key)}
-              onClick={() => setAnswer("timeline", o.key)}
-            />
-          ))}
-        </div>
-        <div className="space-y-3 border-t border-border/60 pt-5">
-          <div className="text-[11px] uppercase tracking-[0.28em] text-foreground/60">
-            Do you have any 3D renders or architectural drawings?
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            {assetOptions.map((o, i) => (
+            <Fragment key={o.key}>
               <OptionRow
-                key={o.key}
                 index={i}
                 label={o.label}
-                selected={answers.hasAssets === o.key}
-                onClick={() => setAnswer("hasAssets", o.key)}
+                cardImg={o.img}
+                selected={answers.timeline === o.key}
+                onHover={() => setHover(o.key)}
+                onClick={() => selectTimeline(o.key)}
               />
-            ))}
-          </div>
+              {i === 1 && isConstruction && (
+                <div className="col-span-2 space-y-2 py-1">
+                  <label
+                    htmlFor="timeline-days"
+                    className="block text-[11px] uppercase tracking-[0.22em] text-foreground/60"
+                  >
+                    Civil work completion (days)
+                  </label>
+                  <input
+                    id="timeline-days"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    autoComplete="off"
+                    maxLength={4}
+                    value={answers.timelineDays ?? ""}
+                    onChange={(event) => updateTimelineDays(event.target.value)}
+                    placeholder="Enter number of days"
+                    aria-describedby="timeline-days-help"
+                    className="h-12 w-full rounded-md border border-border bg-card/40 px-4 text-base text-foreground outline-none transition placeholder:text-muted-foreground focus:border-[color:var(--accent)] focus:bg-card focus:shadow-[0_0_0_3px_color-mix(in_oklab,var(--accent)_18%,transparent)]"
+                  />
+                  <p id="timeline-days-help" className="text-xs text-muted-foreground">
+                    Enter a whole number between 1 and 3650.
+                  </p>
+                </div>
+              )}
+            </Fragment>
+          ))}
         </div>
       </div>
       <StickyFooter>
-        <PrimaryButton disabled={!answers.timeline || !answers.hasAssets} onClick={next}>Continue</PrimaryButton>
+        <PrimaryButton disabled={!canContinue} onClick={next}>
+          Continue
+        </PrimaryButton>
       </StickyFooter>
     </SplitLayout>
   );
@@ -136,10 +176,22 @@ export function Engagement() {
     { key: "design-only", label: "Would like to engage on design, though civil is not ready yet" },
     { key: "other", label: "Other" },
   ];
+  const assetOptions: { key: "yes" | "no"; label: string }[] = [
+    { key: "yes", label: "Yes" },
+    { key: "no", label: "No" },
+  ];
   const isOther = answers.engagement === "other";
-  const canContinue = !!answers.engagement && (!isOther || (answers.engagementOther ?? "").trim().length > 0);
+  const canContinue =
+    !!answers.engagement &&
+    !!answers.hasAssets &&
+    (!isOther || (answers.engagementOther ?? "").trim().length > 0);
   return (
-    <SplitLayout imageKey="engagement" imageSrc={imgEngagement} videoSrc={engagementVideo} caption="From concept to skyline">
+    <SplitLayout
+      imageKey="engagement"
+      imageSrc={imgEngagement}
+      videoSrc={engagementVideo}
+      caption="From concept to skyline"
+    >
       <div className="space-y-6">
         <StepHeading
           kicker="Step 08: Engagement Timing"
@@ -166,9 +218,27 @@ export function Engagement() {
             />
           )}
         </div>
+        <div className="space-y-3 border-t border-border/60 pt-5">
+          <div className="text-[11px] uppercase tracking-[0.28em] text-foreground/60">
+            Do you have any 3D renders or architectural drawings?
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {assetOptions.map((o, i) => (
+              <OptionRow
+                key={o.key}
+                index={options.length + i}
+                label={o.label}
+                selected={answers.hasAssets === o.key}
+                onClick={() => setAnswer("hasAssets", o.key)}
+              />
+            ))}
+          </div>
+        </div>
       </div>
       <StickyFooter>
-        <PrimaryButton disabled={!canContinue} onClick={next}>Continue</PrimaryButton>
+        <PrimaryButton disabled={!canContinue} onClick={next}>
+          Continue
+        </PrimaryButton>
       </StickyFooter>
     </SplitLayout>
   );

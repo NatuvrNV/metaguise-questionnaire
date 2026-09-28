@@ -16,9 +16,14 @@ function flagEmoji(code: string): string {
     .join("");
 }
 
+const PHONE_LENGTH = 10;
+
 const schema = z.object({
   fullName: z.string().trim().min(2, "Please enter your full name").max(80),
-  phone: z.string().trim().min(7, "Enter a valid phone number").max(20),
+  phone: z
+    .string()
+    .trim()
+    .regex(new RegExp(`^\\d{${PHONE_LENGTH}}$`), `Enter a valid ${PHONE_LENGTH}-digit phone number`),
   email: z.string().trim().email("Enter a valid email").max(120),
 });
 
@@ -175,11 +180,14 @@ function PhoneWithCountry({
         )}
         <input
           type="tel"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          maxLength={PHONE_LENGTH}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, PHONE_LENGTH))}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          autoComplete="tel"
+          autoComplete="tel-national"
           className="peer h-full flex-1 bg-transparent px-4 pt-4 pb-1 text-[14px] text-foreground outline-none"
           placeholder=" "
         />
