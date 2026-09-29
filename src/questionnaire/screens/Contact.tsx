@@ -20,6 +20,7 @@ const PHONE_LENGTH = 10;
 
 const schema = z.object({
   fullName: z.string().trim().min(2, "Please enter your full name").max(80),
+  city: z.string().trim().min(2, "Please enter your city").max(80),
   phone: z
     .string()
     .trim()
@@ -211,6 +212,7 @@ export function Contact() {
   const { answers, setAnswer, next } = useQuestionnaire();
   const result = schema.safeParse({
     fullName: answers.fullName ?? "",
+    city: answers.city ?? "",
     phone: answers.phone ?? "",
     email: answers.email ?? "",
   });
@@ -231,6 +233,13 @@ export function Contact() {
             onChange={(e) => setAnswer("fullName", e.target.value)}
             error={answers.fullName !== undefined ? errors.fullName?.[0] : undefined}
             autoComplete="name"
+          />
+          <FloatingInput
+            label="City"
+            value={answers.city ?? ""}
+            onChange={(e) => setAnswer("city", e.target.value)}
+            error={answers.city !== undefined ? errors.city?.[0] : undefined}
+            autoComplete="address-level2"
           />
           <PhoneWithCountry
             dial={answers.phoneCountry ?? "+91"}
