@@ -13,13 +13,59 @@ const COMPANY_ID = "693f9759f956d25cedd37a6f";
 const API_KEY = "918ef419818745ef1f09f705a9642545";
 const CALL_SOURCE = "QUESTIONNAIRE_VISUAL_ADS";
 
-// Scale answer -> approximate sq ft (used for lead assignment + backend field)
+// ---------------------------------------------------------------------------
+// CRM-ONLY values (nothing below is sent to Zapier)
+// ---------------------------------------------------------------------------
+
+// Scale answer -> sq ft sent to backend (one value inside each bucket,
+// so lead-assignment ranges match correctly)
 const SCALE_SQFT: Record<string, number> = {
-  accent: 500,
-  boutique: 2000,
-  mid: 6500,
-  large: 20000,
-  landmark: 40000,
+  accent: 999, // Under 1,000
+  boutique: 2999, // Under 3,000
+  mid: 9999, // 3,000 to 10,000
+  large: 29999, // 10,000 to 30,000
+  landmark: 30001, // 30,000 and above
+};
+
+// Human-readable range text for the CRM brief / remarks
+const SCALE_RANGE_LABEL: Record<string, string> = {
+  accent: "Under 1000 (0-999)",
+  boutique: "1001-2999",
+  mid: "3001-9999",
+  large: "10001-29999",
+  landmark: "30001+",
+};
+
+const PROJECT_TYPE_LABEL: Record<string, string> = {
+  residence: "Residential",
+  corporate: "Commercial & Corporate",
+  retail: "Retail & Flagship",
+  institutional: "Institutional",
+  hospitality: "Hospitality",
+  healthcare: "Healthcare",
+  mixed: "Mixed Use/Township",
+};
+
+const FACADE_STYLE_LABEL: Record<string, string> = {
+  iconic: "Iconic",
+  refined: "Old Money",
+  minimal: "Japandi",
+  contemporary: "Contemporary",
+  artistic: "Avant-garde",
+  contextual: "Contextual",
+  "value-driven": "Functional",
+  "one-of-a-kind": "One of a Kind",
+  fluid: "Classic",
+  monolithic: "Brutalist",
+  futuristic: "Neo-futurist",
+  textural: "Maximalist",
+};
+
+const STAGE_LABEL: Record<string, string> = {
+  design: "Design Stage",
+  construction: "Under Construction",
+  "civil-complete": "Civil work completed, ready for facade work",
+  renovation: "Renovation/Facade upgrade",
 };
 
 const ROLE_TO_TYPE: Record<string, string> = {
@@ -79,7 +125,7 @@ export function Vision() {
   const vision = answers.vision ?? "";
   const [submitting, setSubmitting] = useState(false);
 
-  const createLead = async (brief: string) => {
+  const createLead = async (brief: string, remarks: string) => {
     const sqft = SCALE_SQFT[answers.scale ?? ""] ?? 5000;
     const leadAssignments = await getLeadAssignments(sqft);
 
@@ -115,7 +161,7 @@ export function Vision() {
       productBrand: "Metaguise",
       productId: "69412167f956d233e1261afc",
       callStatus: "NEW_LEAD",
-      remarks: vision,
+      remarks,
       callRegistration: true,
       leadAssignments,
       callSource: CALL_SOURCE,
@@ -145,7 +191,7 @@ export function Vision() {
         ? `construction (civil work completing in ${answers.timelineDays} days)`
         : answers.timeline ?? "";
 
-    // Flatten the answers into a spreadsheet-friendly shape.
+    // ---- ZAPIER payload: unchanged, still sends the original raw values ----
     const payload = {
       submittedAt: new Date().toISOString(),
       source: CALL_SOURCE,
@@ -165,12 +211,36 @@ export function Vision() {
       fileCount: (answers.files ?? []).length,
     };
 
+    // ---- CRM-only labels ----
+    const facadeTypeLabel =
+      answers.projectType === "other"
+        ? answers.projectTypeOther ?? ""
+        : PROJECT_TYPE_LABEL[answers.projectType ?? ""] ?? "";
+
+    const facadeAreaLabel = SCALE_RANGE_LABEL[answers.scale ?? ""] ?? "";
+
+    const facadeVisionLabel = FACADE_STYLE_LABEL[answers.facadeStyle ?? ""] ?? "";
+
+    const facadeStageLabel =
+      answers.timeline === "construction" && answers.timelineDays
+        ? `Under Construction (civil work completing in ${answers.timelineDays} days)`
+        : STAGE_LABEL[answers.timeline ?? ""] ?? "";
+
+    // Remarks field in the CRM
+    const remarks = [
+      `Facade Type: ${facadeTypeLabel} (step 2)`,
+      `Facade Area: ${facadeAreaLabel} sq ft (step 5)`,
+      `Facade Vision: ${facadeVisionLabel} (step 6)`,
+      `Facade Stage: ${facadeStageLabel} (step 7)`,
+      `Facade Goals: ${vision} (step 9)`,
+    ].join("\n");
+
     // Human-readable brief for the CRM (covers answers the backend has no field for)
     const brief = [
       answers.city ? `City: ${answers.city}` : "",
       `Role: ${role}`,
       `Project type: ${projectType}`,
-      `Scale: ${answers.scale ?? ""}`,
+      `Facade Area (sq ft): ${facadeAreaLabel}`,
       `Facade style: ${answers.facadeStyle ?? ""}`,
       `Project stage: ${timeline}`,
       `Engagement: ${engagement}`,
@@ -194,7 +264,7 @@ export function Vision() {
             body: JSON.stringify(payload),
           })
         : Promise.resolve(),
-      createLead(brief),
+      createLead(brief, remarks),
     ]);
 
     if (zapierResult.status === "rejected")
