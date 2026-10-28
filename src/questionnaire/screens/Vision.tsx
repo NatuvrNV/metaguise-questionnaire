@@ -13,6 +13,19 @@ const COMPANY_ID = "693f9759f956d25cedd37a6f";
 const API_KEY = "918ef419818745ef1f09f705a9642545";
 const CALL_SOURCE = "QUESTIONNAIRE_VISUAL_ADS";
 
+// ---- Google Ads conversion (fired through Google Tag Manager) ----
+// GTM trigger: Custom Event "questionnaire_submit"
+declare global {
+  interface Window {
+    dataLayer?: Record<string, unknown>[];
+  }
+}
+
+const trackQuestionnaireConversion = () => {
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event: "questionnaire_submit" });
+};
+
 // ---------------------------------------------------------------------------
 // CRM-ONLY values (nothing below is sent to Zapier)
 // ---------------------------------------------------------------------------
@@ -271,6 +284,11 @@ export function Vision() {
       console.error("[Metaguise] Failed to send brief to Zapier", zapierResult.reason);
     if (leadResult.status === "rejected")
       console.error("[Metaguise] Failed to create lead in backend", leadResult.reason);
+
+    // Google Ads conversion (fires via GTM) - only count leads that reached the CRM
+    if (leadResult.status === "fulfilled") {
+      trackQuestionnaireConversion();
+    }
 
     setSubmitting(false);
     next();
